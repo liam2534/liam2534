@@ -77,13 +77,10 @@
       <br>
       <h3>2: How many LEDs could you blink independently with your Arduino? How much current would that draw?</h3>
       <p>If we assume that I use the same setup for each circuit, each circuit would draw 0.015A. There are 20 total pins that work with the digitwlWrite() command,</p>
-      <p>so 20(0.015) = 0.3A total. </p>
+      <p>so 20(0.015) = 0.3A total. Thus, you can blink 20 lights independently, and that would draw 0.3A total.</p>
       <br>
       <h3>3: How fast do you need to blink your LEDs until you no longer can tell that they are blinking?</h3>
-      <p>If we assume that people can see an absolute maximum of 60 frames per second, we can calculate the frequency of </p>
-      <p>which we would need to blink the light where the blinking would become imperceptible:</p>
-      <img width="80%" height="auto" src="A1-Freq.jpg"/>
-      <p>The calculation shows that we need to have the LED blink every 0.01667 seconds.</p>
+      <p>For me personally, after experimenting, I stopped being able to tell the light was blinking around 3ms delay.</p>
 
     </div>
   </body>
