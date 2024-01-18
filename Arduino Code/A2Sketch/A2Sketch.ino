@@ -1,3 +1,4 @@
+//Runs this code once upon startup
 void setup() {
   //for loop sets pins 9-11 all to output
   for(int i = 9; i <12; i++){
@@ -8,6 +9,7 @@ void setup() {
   pinMode(2, INPUT);
 }
 
+//Loops this code continuously after setup
 void loop() {
   //if statement for when 2 reads low, does the following:
   if(digitalRead(2) == LOW){
