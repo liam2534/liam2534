@@ -17,24 +17,24 @@ void loop() {
   //250 and 900 because those were the best bounds for the most obvious changes in lighting
   //for the room that I was in.
   int fiveVoltage = map(analogRead(A0), 250, 900, 0, 255);
-  //made int sixCondition and mapped it to a value between 0 and 2 (inclusive)
+  //made int sixCondition and mapped it to a value between 0 and 100 (inclusive)
   //so I could pass sixCondition into an if-else statement late to see if 
   //the photoresistor was covered or not
-  int sixCondition = map(analogRead(A0), 250, 900, 0, 2);
+  int sixCondition = map(analogRead(A0), 250, 900, 0, 100);
   //prints value for fiveVoltage to the Serial Monitor
   Serial.println(fiveVoltage);
-  //prints value for sixCondition to the Seiral Monitor
+  //prints value for sixCondition to the Serial Monitor
   Serial.println(sixCondition);
   //Prints a new line for readability purposes
   Serial.println();
   //Makes pin 5 output voltage proportional to what analogRead(A0) reads
   analogWrite(5, fiveVoltage);
-  //checks to see if the sixCondition is 0, 1, or 2.
-  //1 would be halfway between 250 and 900 on analogRead
-  if(sixCondition < 1){
+  //checks to see if the sixCondition is < 50, meaning the LDR is covered.
+  //50 would be halfway between 250 and 900 on analogRead
+  if(sixCondition < 50){
     //sets pin 6 to output 5V if condition is met (covered)
     digitalWrite(6, HIGH);
-    //else statement for when sixCondition is !< 1
+    //else statement for when sixCondition is !< 50
     //(when the photoresistor is uncovered)
   } else{
     //turns pin 6 to output 0V
