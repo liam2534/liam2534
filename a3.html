@@ -154,7 +154,7 @@
       </p>
       <h3>3: AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</h3>
       <p>The map() function in my code would need to become map(some-value, 0, 65535, 0, 1023). This is because if analogRead() returns a 16 bit number, it would return a number betweeen
-        0 and 6,7108,863, and I would need to remap that value to something between 0 and 1023 so I can pass that value into a hypothetical analogWrite() function that
+        0 and 65,535, and I would need to remap that value to something between 0 and 1023 so I can pass that value into a hypothetical analogWrite() function that
         takes in an 8 bit number, which the latter range falls into.
       </p>
     </div>
