@@ -138,7 +138,13 @@
       <br>
       <h3>1: In your voltage divider, can the variable resistor be either R1 or R2 or does it need to be one or the other? Justify your answer with example calculations.</h3>
       <img width="70%" height="auto" src="./A3-Folder/A3P1.jpeg"/>
-      <p>You cannot switch the values for R1 and R2 because that would change the V-out from what it is in reality.
+      <p>You cannot switch the values for R1 and R2 because that would change turn V-out to the difference between the original V-out (before R1 and R2 are flipped) and V-in:
+        
+        5-4.36 = 0.64 V 
+
+        0.64V is the value I got when I switched R1 and R2.
+
+        Note: You could still use this value, if it's what you're looking for, but it's not the same as when they are not switched.
       </p>
       <br>
       <h3>2: Draw a graph where the x-axis is time and the y-axis is voltage. Plot the voltage at V-measure of your voltage divider of your shared gif.</h3>
@@ -147,6 +153,10 @@
         at the top of the page. The high and low values were calculated at the top-right corner of the schematic page.
       </p>
       <h3>3: AnalogWrite and analogRead are respectively 8-bit and 10-bit values. Imagine you had 10-bit PWM and a 16-bit analog-to-digital converter instead. How would this change your map() code? Explain your answer.</h3>
+      <p>The map() function in my code would need to become map(some-value, 0, 65535, 0, 1023). This is because if analogRead() returns a 16 bit number, it would return a number betweeen
+        0 and 6,7108,863, and I would need to remap that value to something between 0 and 1023 so I can pass that value into a hypothetical analogWrite() function that
+        takes in an 8 bit number, which the latter range falls into.
+      </p>
     </div>
   </body>
 </html>
