@@ -9,27 +9,22 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Input Output!</h1>
+    <h1>Libraries!</h1>
     <div class="header">
       <video width="100%" height="auto" controls autoplay muted>
-        <source src="./A3-Folder/A3-video.mp4" type="video/mp4">
+        <source src="./A4-Folder/a4Video.mp4" type="video/mp4">
       </video>
     </div>
     <div>
-      <p>This is a video of my Arduino circuit. There are 2 LEDs that change state pending the state of the LDR and voltage divider. The Green LED's brightness corresponds to the 
-        value outputted by the voltage divider. When the LDR is exposed to more light, the resistance is lower, and the voltage read by the voltage divider
-        is higher, thus the green light is brighter. This is also why when the LDR is covered, the green LED dims. The red LED simply turns on when the 
-        voltage divider reaches about halfway between the highest and lowest value it read during my testing.
+      <p>This is a video of my Arduino circuit. There is a PIR that triggers a small servo motor for a short period of time when it detects movement.
       </p>
     </div>
     <br>
     <br>
     <div>
       <h2>The Schematic & Calculations:</h2>
-      <img width="80%" height="auto" src="./A3-Folder/A3-schematic.webp"/>
-      <p>This is my written out schematic. As shown by my work, I ended up using 220 ohm resistors because I did not have 160 ohm resistors for the red & green LEDs.
-        I also used the 10k resistor so it can restrict the current down to 0.5mA (5V/10000ohms=0.5mA) in case the LDR gave 0 ohms of resistance. Work and explanations for voltage out values and 
-        resistance for the LDR in light and dark conditions are present in the image.
+      <img width="80%" height="auto" src="./A4-Folder/a4Schematic.jpg"/>
+      <p>This is my written out schematic. The PIR and servo motor do not need resistors. They are set up in parallel to a 5V power supply.
       </p>
     </div>
     <br>
@@ -37,98 +32,52 @@
     <div>
       <h2>Firmware</h2>
         <pre>
-          <code>//runs this code once at the start
+          <code>//loading in library for PIR
+            #include "PIR.h"
+            //loading in library for Servo Motor
+            #include <Servo.h>
+            //making PIR object P
+            PIR P;
+            //making servo object S
+            Servo S;
+            //int for servo rotation value
+            int servoInt = 0;
+            
+            //setup code runs once upon startup
             void setup() {
-              //Sets bit rate for serial data transmission (matches baud in menu)
-              Serial.begin(9600);
-              //sets pin 5 to output
-              pinMode(5, OUTPUT);
-              //sets pin 6 to output
-              pinMode(6, OUTPUT);
+              //adding PIR to pin 10
+              P.add(10);
+              //adding servo motor to pin 11
+              S.attach(11);
             }
             
-            //loops this code repeatedly forever
+            //loop runs repeatedly
             void loop() {
-              //prints the value that analogRead(A0) gives us to the Serial Monitor
-              Serial.println(analogRead(A0));
-              //I make an int fiveVoltage and map it to a value between 0 and 255 (inclusive)
-              //so it can be passed into analogWrite() later. I chose the lower limits to be 
-              //250 and 900 because those were the best bounds for the most obvious changes in lighting
-              //for the room that I was in.
-              int fiveVoltage = map(analogRead(A0), 250, 900, 0, 255);
-              //made int sixCondition and mapped it to a value between 0 and 100 (inclusive)
-              //so I could pass sixCondition into an if-else statement late to see if 
-              //the photoresistor was covered or not
-              int sixCondition = map(analogRead(A0), 250, 900, 0, 100);
-              //prints value for fiveVoltage to the Serial Monitor
-              Serial.println(fiveVoltage);
-              //prints value for sixCondition to the Serial Monitor
-              Serial.println(sixCondition);
-              //Prints a new line for readability purposes
-              Serial.println();
-              //Makes pin 5 output voltage proportional to what analogRead(A0) reads
-              analogWrite(5, fiveVoltage);
-              //checks to see if the sixCondition is < 50, meaning the LDR is covered.
-              //50 would be halfway between 250 and 900 on analogRead
-              if(sixCondition < 50){
-                //sets pin 6 to output 5V if condition is met (covered)
-                digitalWrite(6, HIGH);
-                //else statement for when sixCondition is !< 50
-                //(when the photoresistor is uncovered)
-              } else{
-                //turns pin 6 to output 0V
-                digitalWrite(6, LOW);
+              //checks if PIR detects movement
+              if(P.read() == 1){
+                //rotates servo motor to position servoInt
+                S.write(servoInt);
+                //makes servo int higher by 15 degrees
+                servoInt += 15;
+                //checks if servoInt is greater than 180 degrees
+                if(servoInt > 180){
+                  //resets servo int to reset servo motor position
+                  servoInt = 0;
+               }
               }
-              //delays 100ms for readability purposes on the Serial Monitor
-              delay(100);
-            }
-            </code>
-        </pre>
-        <p>This code has comments on every line that explain what it does, but in general, pin 5 mirrors the voltage value from A0, and 
-          pin 6 is either set to output 0 or 5 volts pending the voltage value from A0. Also, the values read fro AO, the mapped corresponding value for 
-          pin 5, and the value I use to check if pin 6 should be HIGH or LOW are printed to the Serial Monitor.
-        </p>
-        <br>
-        <style>
-          code {
-            white-space: pre;
-          }
-        </style>
-        <code>
-          874
-          244
-          95
-
-          874
-          244
-          96
-
-          874
-          244
-          96
-
-          268
-          7
-          2
-
-          267
-          7
-          2
-
-          250
-          0
-          0
+              //delays for 200ms 
+              delay(200);
+            }            
         </code>
         <p>
-          This is an example of what you would see on the Serial Monitor. The higher values are when the LDR is uncovered, and thus the voltage divider is reading high values.
-          The opposite is true for the lower values, which is when the LDR is covered.
+          This is my commented-out firmware.
         </p>
     </div>
     <br>
     <br>
     <div>
       <h2>Final Circuit!</h2>
-      <img width="80%" height="auto" src="./A3-Folder/A3-thumbnail.webp"/>
+      <img width="80%" height="auto" src="./A4-Folder/a4Thumbnail.jpg"/>
       <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does.</p>
     </div>
     <br>
