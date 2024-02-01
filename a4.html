@@ -95,16 +95,41 @@
       <p>The graph models the voltage at pin 9 over 2 seconds with the given code.</p>
       <br>
       <h3>2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</h3>
-      <img width="70%" height="auto" src="./A3-Folder/A3P2.jpeg"/>
-      <p>This graph shows what voltage the voltage divider would read over the course of someone covering the LDR with their hand slowly, similar to what I did in the video
-        at the top of the page. The high and low values were calculated at the top-right corner of the schematic page.
-      </p>
+      <br>
+      <code> 
+        loop{
+          //check if current value is 1, which is "movement"
+          if(P.read() ==1){
+            //delay for a while to make sure that the "HIGH/1" inputs stop if it's fake. 
+            delay(500);
+            if(P.read() == 1)
+            //Do thing
+            //This will only be triggered if someone is still moving their hand after half a second
+            //The the first check in this loop triggers when the PIR is set off the first time, the second if statement makes sure the reading is legit.
+          }
+        }
+      </code>
+      <p>The mix of pseudocode and "code" has explanations and justifications assuming that I'm using a .</p>
       <br>
       <h3>3: Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</h3>
-      <p>The map() function in my code would need to become map(some-value, 0, 65535, 0, 1023). This is because if analogRead() returns a 16 bit number, it would return a number betweeen
-        0 and 65,535, and I would need to remap that value to something between 0 and 1023 so I can pass that value into a hypothetical analogWrite() function that
-        takes in an 8 bit number, which the latter range falls into.
-      </p>
+      <code>
+        //based on how the question is worded, I am going to assume it's either up or down 10% and never exactly correct.
+        //Thus, one way to help mitigate the noise is to find the average between the two numbers it's supposed to be,
+        //in other word
+        loop{
+          //store last value in a variable 
+          int lastVal = whatever.Read();
+          //actual value if lastVal (aka measured value) was 10% below actual value
+          int aboveVal = lastVal/.9;
+          //actual value if lastVal (aka measured value) was 10% above actual value
+          int belowVal = lastVal/1.1;
+
+          //find the avg for the two values
+          int avgVal = (aboveVal + belowVal)/2;
+        }
+      </code>
+      <p>The mix of pseudocode and code has comments that explain my thinking.</p>
+      
     </div>
   </body>
 </html>
