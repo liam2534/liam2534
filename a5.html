@@ -9,14 +9,14 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Libraries!</h1>
+    <h1>Higher Voltage & Transistors!</h1>
     <div class="header">
       <video width="100%" height="auto" controls autoplay muted>
-        <source src="./A4-Folder/a4Video.mp4" type="video/mp4">
+        <source src="./A5-Folder/a5Vid.mp4" type="video/mp4">
       </video>
     </div>
     <div>
-      <p>This is a video of my Arduino circuit. There is a PIR that triggers a small servo motor for a short period of time when it detects movement.
+      <p>This is a video of my Arduino circuit. Simplified, there is a PIR that triggers an LED light strip to turn on..
       </p>
     </div>
     <br>
@@ -24,7 +24,7 @@
     <div>
       <h2>The Schematic & Calculations:</h2>
       <img width="80%" height="auto" src="./A4-Folder/a4Schematic.jpg"/>
-      <p>This is my written out schematic. The PIR and servo motor do not need resistors. They are set up in parallel to a 5V power supply.
+      <p>This is my written out schematic. The PIR and LED Strip do not need resistors. The PIR and LED Strip are powered by different power supplies.
       </p>
     </div>
     <br>
@@ -34,45 +34,56 @@
         <pre>
           <code>//loading in library for PIR
             #include "PIR.h"
-            //loading in library for Servo Motor
-            #include <Servo.h>
             //making PIR object P
             PIR P;
-            //making servo object S
-            Servo S;
-            //int for servo rotation value
-            int servoInt = 0;
+            
+            //make brightness int
+            int brightness = 0;
+            //make checker int variable for PIR 
+            int lastVal;
+            //make checker int var for PIR
+            int currentVal;
+            //make brightness level array for PIR
+            int blvl[] = {25, 150, 255};
+            
             
             //setup code runs once upon startup
             void setup() {
               //adding PIR to pin 10
               P.add(10);
-              //adding servo motor to pin 11
-              S.attach(11);
+              //set pin 10 to output mode
+              pinMode(9, OUTPUT);
             }
             
             //loop runs repeatedly
             void loop() {
               //checks if PIR detects movement
-              if(P.read() == 1){
-                //rotates servo motor to position servoInt
-                S.write(servoInt);
-                //makes servo int higher by 15 degrees
-                servoInt += 15;
-                //checks if servoInt is greater than 180 degrees
-                if(servoInt > 180){
-                  //resets servo int to reset servo motor position
-                  servoInt = 0;
-               }
-              }
-              //delays for 200ms 
-              delay(200);
+              currentVal = P.read();
+                //check to make sure light only turns on per each time the PIR detects movement, not necessarily as long as the PIR reads "HIGH/1"
+                if(currentVal == 1 && currentVal != lastVal){
+                  //makes pin 9 output "brightness" amount of voltage. This goes to the transistor, which makes the LEDs
+                  //proportionally bright
+                  analogWrite(9, blvl[brightness]);
+                  //brightness int increases to cycle through the array blvl
+                  brightness++;
+                  //light stays on for 5000ms
+                  delay(5000);
+                  //turns light off after delay
+                  analogWrite(9, 0);
+                  //checks if brightness is greater than max of blvl array
+                  if(brightness >2){
+                    //resets to avoid error
+                    brightness = 0;
+                  }
+                }
+              //makes currentVal lastVal to ensure if statement works
+              lastVal = currentVal;
             }            
         </code>
       </pre>
 
       <p>
-        This is my commented-out firmware.
+        This is my commented-out firmware that explains how the circuit works.
       </p>
     </div>
     
