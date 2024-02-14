@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Liam's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Libraries!</h1>
+    <div class="header">
+      <video width="100%" height="auto" controls autoplay muted>
+        <source src="./A4-Folder/a4Video.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div>
+      <p>This is a video of my Arduino circuit. There is a PIR that triggers a small servo motor for a short period of time when it detects movement.
+      </p>
+    </div>
+    <br>
+    <br>
+    <div>
+      <h2>The Schematic & Calculations:</h2>
+      <img width="80%" height="auto" src="./A4-Folder/a4Schematic.jpg"/>
+      <p>This is my written out schematic. The PIR and servo motor do not need resistors. They are set up in parallel to a 5V power supply.
+      </p>
+    </div>
+    <br>
+    <br>
+    <div>
+      <h2>Firmware</h2>
+        <pre>
+          <code>//loading in library for PIR
+            #include "PIR.h"
+            //loading in library for Servo Motor
+            #include <Servo.h>
+            //making PIR object P
+            PIR P;
+            //making servo object S
+            Servo S;
+            //int for servo rotation value
+            int servoInt = 0;
+            
+            //setup code runs once upon startup
+            void setup() {
+              //adding PIR to pin 10
+              P.add(10);
+              //adding servo motor to pin 11
+              S.attach(11);
+            }
+            
+            //loop runs repeatedly
+            void loop() {
+              //checks if PIR detects movement
+              if(P.read() == 1){
+                //rotates servo motor to position servoInt
+                S.write(servoInt);
+                //makes servo int higher by 15 degrees
+                servoInt += 15;
+                //checks if servoInt is greater than 180 degrees
+                if(servoInt > 180){
+                  //resets servo int to reset servo motor position
+                  servoInt = 0;
+               }
+              }
+              //delays for 200ms 
+              delay(200);
+            }            
+        </code>
+      </pre>
+
+      <p>
+        This is my commented-out firmware.
+      </p>
+    </div>
+    
+    <br>
+    <br>
+    <div>
+      <h2>Final Circuit!</h2>
+      <img width="80%" height="auto" src="./A4-Folder/a4Thumbnail.jpg"/>
+      <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does.</p>
+    </div>
+    <br>
+    <br>
+    <div>
+      <h2>Additional Questions</h2>
+      <br>
+      <h3>1: Say you are using a servo motor you attach to pin 9. In your loop() you have the following code:
+        <code> for (int i=0, i<180, i++){servo.write(i); delay(100);}</code> Draw a graph with the X axis in seconds, for two seconds, and the y-axis the voltage at pin 9 with respect to ground.</h3>
+      
+      <img width="70%" height="auto" src="./A4-Folder/a4p1.webp"/>
+      <p>The graph models the voltage at pin 9 over 2 seconds with the given code. This is also "assuming" that it takes the servo motor 100ms to move 1 degree.</p>
+      <br>
+      <h3>2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</h3>
+      <br>
+      <pre>
+      <code> 
+          loop{
+            //check if current value is 1, which is "movement"
+            if(P.read() ==1){
+              //delay for a while to make sure that the "HIGH/1" inputs stop if it's fake. 
+              delay(500);
+              if(P.read() == 1)
+              //Do thing
+              //This will only be triggered if someone is still moving their hand after half a second
+              //The the first check in this loop triggers when the PIR is set off the first time, the second if statement makes sure the reading is legit.
+            }
+          }
+        </code>
+      </pre>
+      <p>The mix of pseudocode and "code" has explanations and justifications assuming that I'm using a PIR.</p>
+      <br>
+      <h3>3: Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</h3>
+      <pre>
+        <code>
+          //based on how the question is worded, I am going to assume it's either up or down 10% and never exactly correct.
+          //Thus, one way to help mitigate the noise is to find the average between the two numbers it's supposed to be,
+          //in other word
+          loop{
+            //store last value in a variable 
+            int lastVal = whatever.Read();
+            //actual value if lastVal (aka measured value) was 10% below actual value
+            int aboveVal = lastVal/.9;
+            //actual value if lastVal (aka measured value) was 10% above actual value
+            int belowVal = lastVal/1.1;
+
+            //find the avg for the two values
+            int avgVal = (aboveVal + belowVal)/2;
+          }
+        </code>
+      </pre>
+      <p>The mix of pseudocode and code has comments that explain my thinking. I'm also answering this question as if I was using a different input device that could give me more complex values that are not 0 or 1.</p>
+    </div>
+  </body>
+</html>

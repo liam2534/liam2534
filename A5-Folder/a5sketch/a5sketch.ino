@@ -32,13 +32,14 @@ void loop() {
     if(currentVal == 1 && currentVal != lastVal){
       analogWrite(9, blvl[brightness]);
       brightness++;
+      
+      Serial.println(currentVal); 
       delay(5000);
       analogWrite(9, 0);
       if(brightness >2){
         brightness = 0;
       }
     }
-  Serial.println(currentVal);
 
   lastVal = currentVal;
 }
