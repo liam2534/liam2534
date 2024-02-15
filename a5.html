@@ -99,13 +99,10 @@
     <div>
       <h2>Additional Questions</h2>
       <br>
-      <h3>1: Say you are using a servo motor you attach to pin 9. In your loop() you have the following code:
-        <code> for (int i=0, i<180, i++){servo.write(i); delay(100);}</code> Draw a graph with the X axis in seconds, for two seconds, and the y-axis the voltage at pin 9 with respect to ground.</h3>
-      
-      <img width="70%" height="auto" src="./A4-Folder/a4p1.webp"/>
-      <p>The graph models the voltage at pin 9 over 2 seconds with the given code. This is also "assuming" that it takes the servo motor 100ms to move 1 degree.</p>
+      <h3>1: What is the absolute maximum amount of current between pins 2 and 3?</h3>
+      <p>According to the datasheet of the component,the maximum body diode forward current is 80A.</p>
       <br>
-      <h3>2: Your input device is slightly broken, leading it to give us an erroneous reading 1% of the time. How can we address this? Answer in (pseudo)code.</h3>
+      <h3>2: Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.</h3>
       <br>
       <pre>
       <code> 
@@ -115,7 +112,7 @@
               //delay for a while to make sure that the "HIGH/1" inputs stop if it's fake. 
               delay(500);
               if(P.read() == 1)
-              //Do thing
+              //Do thing 
               //This will only be triggered if someone is still moving their hand after half a second
               //The the first check in this loop triggers when the PIR is set off the first time, the second if statement makes sure the reading is legit.
             }
@@ -125,21 +122,33 @@
       <p>The mix of pseudocode and "code" has explanations and justifications assuming that I'm using a PIR.</p>
       <br>
       <h3>3: Your input device is slightly noisy, leading the measurement to randomly deviate from the true measurement up or down by 10%. How can we address this? Answer in (pseudo)code.</h3>
+      <img width="80%" height="auto" src="./A5-Folder/a5p3.png"/>
       <pre>
         <code>
-          //based on how the question is worded, I am going to assume it's either up or down 10% and never exactly correct.
-          //Thus, one way to help mitigate the noise is to find the average between the two numbers it's supposed to be,
-          //in other word
+          setup(){
+            pinMode(1,2,4, and 5, OUTPUT);
+          }
           loop{
-            //store last value in a variable 
-            int lastVal = whatever.Read();
-            //actual value if lastVal (aka measured value) was 10% below actual value
-            int aboveVal = lastVal/.9;
-            //actual value if lastVal (aka measured value) was 10% above actual value
-            int belowVal = lastVal/1.1;
-
-            //find the avg for the two values
-            int avgVal = (aboveVal + belowVal)/2;
+            //both forward:
+            digitalWrite(2 and 4, HIGH);
+            digitalWrite(1 and 5, LOW);
+            delay(3000);
+            //both backward:
+            digitalWrite(2 and 4, LOW);
+            digitalWrite(1 and 5, HIGH);
+            delay(3000);
+            //alternate directions
+            digitalWrite(2, HIGH);
+            digitalWrite(1, LOW);
+            digitalWrite(4, LOW);
+            digitalWrite(5, HIGH);
+            delay(3000);
+            //alternate directions again
+            digitalWrite(2, LOW);
+            digitalWrite(1, HIGH);
+            digitalWrite(4, HIGH);
+            digitalWrite(5, LOW);
+            delay(3000);
           }
         </code>
       </pre>
