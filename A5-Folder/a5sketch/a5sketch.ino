@@ -40,6 +40,6 @@ void loop() {
         brightness = 0;
       }
     }
-
+  Serial.println(currentVal);
   lastVal = currentVal;
 }

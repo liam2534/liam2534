@@ -24,7 +24,10 @@
     <div>
       <h2>The Schematic & Calculations:</h2>
       <img width="80%" height="auto" src="./A5-Folder/a5schematic.jpg"/>
-      <p>This is my written out schematic. The PIR and LED Strip do not need resistors. The PIR and LED Strip are powered by different power supplies.
+      <img width="80%" height="auto" src="./A5-Folder/a5schem2.png"/>
+      <img width="80%" height="auto" src="./A5-Folder/a5schem3.png"/>
+      <p>This is my written out schematic. The PIR and LED Strip do not need resistors. The PIR and LED Strip are powered by different power supplies. Voltages and currents after the PIR and LED Strip are given. Also, according to the 
+        data sheet, at room temperature and 10V, max continuous current is 37.2 A. Either way, the current running through the transistor (1.7A) is significantly less than 37.2A.
       </p>
     </div>
     <br>
@@ -100,26 +103,15 @@
       <h2>Additional Questions</h2>
       <br>
       <h3>1: What is the absolute maximum amount of current between pins 2 and 3?</h3>
-      <p>According to the datasheet of the component,the maximum body diode forward current is 80A.</p>
+      <p>According to the datasheet of the component,the maximum body diode forward current is 80A, however, its at room temperature and 10V, max continuous current is 37.2 A under normal operating conditions.</p>
       <br>
       <h3>2: Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.</h3>
       <br>
-      <pre>
-      <code> 
-          loop{
-            //check if current value is 1, which is "movement"
-            if(P.read() ==1){
-              //delay for a while to make sure that the "HIGH/1" inputs stop if it's fake. 
-              delay(500);
-              if(P.read() == 1)
-              //Do thing 
-              //This will only be triggered if someone is still moving their hand after half a second
-              //The the first check in this loop triggers when the PIR is set off the first time, the second if statement makes sure the reading is legit.
-            }
-          }
-        </code>
-      </pre>
-      <p>The mix of pseudocode and "code" has explanations and justifications assuming that I'm using a PIR.</p>
+      <img width="80%" height="auto" src="./A5-Folder/a5Thumbnail.jpg"/>
+      <p>Datasheets:</p>
+      <p>1N4001 - https://www.vishay.com/docs/88503/1n4001.pdf</p>
+      <p>TFK280SC-21138-45 - https://cdn.sparkfun.com/datasheets/Robotics/RP6%20motor%20TFK280SC-21138-45.pdf</p>
+      <p>EEU-FR1H100B - https://industrial.panasonic.com/cdbs/www-data/pdf/RDF0000/ABA0000C1259.pdf</p>
       <br>
       <h3>3: Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.</h3>
       <img width="80%" height="auto" src="./A5-Folder/a5p3.png"/>
