@@ -9,14 +9,14 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <h1>Higher Voltage & Transistors!</h1>
+    <h1>Talking to the Web!</h1>
     <div class="header">
       <video width="100%" height="auto" controls autoplay muted>
-        <source src="./A5-Folder/a5Vid.mp4" type="video/mp4">
+        <source src="./A6-Folder/a6vid.mp4" type="video/mp4">
       </video>
     </div>
     <div>
-      <p>This is a video of my Arduino circuit. Simplified, there is a PIR that triggers an LED light strip to turn on at various brightness levels.
+      <p>This is a video of my Arduino circuit. Simplified, there is a program running that is communicating with p5 that changes the screen pending the position of the joystick, as well as when the mouse is clicked or not. Clicking the mouse also turns on the red LED.
       </p>
     </div>
     <br>
@@ -35,118 +35,188 @@
     <div>
       <h2>Firmware</h2>
         <pre>
-          <code>//loading in library for PIR
-            #include "PIR.h"
-            //making PIR object P
-            PIR P;
-            
-            //make brightness int
-            int brightness = 0;
-            //make checker int variable for PIR 
-            int lastVal;
-            //make checker int var for PIR
-            int currentVal;
-            //make brightness level array for PIR
-            int blvl[] = {25, 150, 255};
-            
-            
-            //setup code runs once upon startup
+          <code>
+            ////////////////////////
+            ///Arduino CODE BELOW!//
+            ////////////////////////
+
+            //runs setup once
             void setup() {
-              //adding PIR to pin 10
-              P.add(10);
-              //set pin 10 to output mode
-              pinMode(9, OUTPUT);
+              //sets pin 5 to output for LED
+              pinMode(5, OUTPUT);
+              //Starts the serial monitor
+              Serial.begin(9600);
             }
             
             //loop runs repeatedly
             void loop() {
-              //checks if PIR detects movement
-              currentVal = P.read();
-                //check to make sure light only turns on per each time the PIR detects movement, not necessarily as long as the PIR reads "HIGH/1"
-                if(currentVal == 1 && currentVal != lastVal){
-                  //makes pin 9 output "brightness" amount of voltage. This goes to the transistor, which makes the LEDs
-                  //proportionally bright
-                  analogWrite(9, blvl[brightness]);
-                  //brightness int increases to cycle through the array blvl
-                  brightness++;
-                  //light stays on for 5000ms
-                  delay(5000);
-                  //turns light off after delay
-                  analogWrite(9, 0);
-                  //checks if brightness is greater than max of blvl array
-                  if(brightness >2){
-                    //resets to avoid error
-                    brightness = 0;
-                  }
+              //if there is available serial from p5
+              if (Serial.available()){
+                //if it reads 0, turns light off. Otherwise, turns it off.
+                if(Serial.read() == 0){
+                  //turns light on
+                  digitalWrite(5, HIGH);
+                  //enters this branch when Serial.read != 0
+                } else{
+                  //if Serial.read() != 0, turns LED off
+                  digitalWrite(5, LOW);
                 }
-              //makes currentVal lastVal to ensure if statement works
-              lastVal = currentVal;
-            }            
+              }
+              
+              //prints X value (from joystick) from A0 to serial monitor
+              Serial.print(analogRead(A0));
+              //prints a comma to separate X and Y value (see below) 
+              Serial.print(",");
+              //prints Y value (from joystick) from A1 to the same line after the comma and then makes a new line
+              Serial.println(analogRead(A1));
+              //add 50ms delay
+              delay(50);
+            }
+            
+            //////////////////////
+            ///P5.js CODE BELOW!//
+            //////////////////////
+
+            //baud rate matches arduino
+            const BAUD_RATE = 9600;
+
+            //global variables to be used later for the port and connect button
+            let port, connectBtn;
+
+            //variable for txt color to be determined later
+            let txtColor = "idk_yet";
+
+            //runs once
+            function setup() {
+              // Run our serial setup function (below)
+              setupSerial(); 
+
+              // Create a canvas that is the size of our browser window.
+              // windowWidth and windowHeight are p5 variables
+              createCanvas(windowWidth, windowHeight);
+
+              // p5 text settings. BOLD and CENTER are constants provided by p5.
+              // See the "Typography" section in the p5 reference: https://p5js.org/reference/
+              textFont("system-ui", 50);
+              //makes text bold
+              textStyle(BOLD);
+              //makes text in the center of the screen
+              textAlign(CENTER, CENTER);
+              
+            }
+
+            //draw function runs repeatedly
+            function draw() {
+              //makes a const portIsOpen value equal to checkPort
+              const portIsOpen = checkPort();
+              //checks if port is open, if not, returns.
+              if (!portIsOpen) return;
+
+              //makes a string of the whole line from the serial monitor
+              let str = port.readUntil("\n");
+              //if string length is empty, returns.
+              if (str.length == 0) return; 
+
+              //makes an array from the comma separated values from the serial monitor from the arduino
+              let valArray = str.trim().split(",");
+              
+              //checks if the first value in the array is <= 600
+              if(Number(valArray[0]) <= 600){
+                //if yes, makes background color red
+                background("red");
+                //else statement if valArray[0] fails first check
+              } else{
+                //makes background color black
+                background("black");
+              }
+
+              //check for value of valArray[1]
+              if(Number(valArray[1]) <= 600){
+                //if the number is <= 600, text color is white
+                txtColor = "white";
+                //else if first if fails
+              } else {
+                //makes text color gold if first check fails
+                txtColor = "gold";
+              }
+
+              //check for if mouse is pressed
+              if(mouseIsPressed){
+                //makes the text in center (see text line in this if branch) correspond to txtColor
+                fill(txtColor);
+                //if mouseIsPressed, displays the bottom message in the center of screen
+                text("YOU ARE NOW PRESSING THE MOUSE, AND THE LED IS ON!", windowWidth / 2, windowHeight / 2);
+                //writes 0 to the port, which is used by the arduino to turn light on
+                port.write(0);
+                //else branch for when mouse is not pressed
+              } else{
+                //makes text below correspond to txtColor
+                fill(txtColor);
+                //displays this text in the center of the screen
+                text("PRESS LEFT MOUSE BUTTON TO TOGGLE LED", windowWidth / 2, windowHeight / 2);
+                //writes 1 to port, used by arduino to toggle the light off.
+                port.write(1);
+              }
+
+            }
+
+            // Three helper functions for managing the serial connection.
+
+            //setup port to read in the serial monitor
+            function setupSerial() {
+              //makes port read from serial monitor
+              port = createSerial();
+
+              // Check to see if there are any ports we have used previously
+              let usedPorts = usedSerialPorts();
+              if (usedPorts.length > 0) {
+                // If there are ports we've used, open the first one
+                port.open(usedPorts[0], BAUD_RATE);
+              }
+
+              // create a connect button
+              connectBtn = createButton("Connect to Arduino");
+              connectBtn.position(5, 5); // Position the button in the top left of the screen.
+              connectBtn.mouseClicked(onConnectButtonClicked); // When the button is clicked, run the onConnectButtonClicked function
+            }
+
+            function checkPort() {
+              if (!port.opened()) {
+                // If the port is not open, change button text
+                connectBtn.html("Connect to Arduino");
+                // Set background to gray
+                background("gray");
+                return false;
+              } else {
+                // Otherwise we are connected
+                connectBtn.html("Disconnect");
+                return true;
+              }
+            }
+
+            function onConnectButtonClicked() {
+              // When the connect button is clicked
+              if (!port.opened()) {
+                // If the port is not opened, we open it
+                port.open(BAUD_RATE);
+              } else {
+                // Otherwise, we close it!
+                port.close();
+              }
+            }
         </code>
       </pre>
 
       <p>
-        This is my commented-out firmware that explains how the circuit works.
+        This is my commented-out firmware that explains how the circuit and p5 works.
       </p>
     </div>
-    
     <br>
     <br>
     <div>
       <h2>Final Circuit!</h2>
-      <img width="80%" height="auto" src="./A5-Folder/a5Thumbnail.jpg"/>
+      <img width="80%" height="auto" src="./A6-Folder/a6thumbnail.jpg"/>
       <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does.</p>
-    </div>
-    <br>
-    <br>
-    <div>
-      <h2>Additional Questions</h2>
-      <br>
-      <h3>1: What is the absolute maximum amount of current between pins 2 and 3?</h3>
-      <p>According to the data sheet of the component, the absolute maximum body diode forward current is 80A. However, its at room temperature and 10V, max continuous current is 37.2 A under normal operating conditions, which is more realistic for our purposes.</p>
-      <br>
-      <h3>2: Draw a schematic for a circuit with using at least your arduino, a DC motor, a flyback diode, and capacitors between power and ground. Find parts with datasheets you could use for each of these schematic components.</h3>
-      <br>
-      <img width="80%" height="auto" src="./A5-Folder/a5p2.png"/>
-      <p>This is a basic schematic for a motor connected to a flyback diode and capacitor all in parallel. Part models are labeled, and data sheet links are provided below.</p>
-      <p>Datasheets:</p>
-      <p>1N4001 - https://www.vishay.com/docs/88503/1n4001.pdf</p>
-      <p>TFK280SC-21138-45 - https://cdn.sparkfun.com/datasheets/Robotics/RP6%20motor%20TFK280SC-21138-45.pdf</p>
-      <p>EEU-FR1H100B - https://industrial.panasonic.com/cdbs/www-data/pdf/RDF0000/ABA0000C1259.pdf</p>
-      <br>
-      <h3>3: Draw a schematic using at least your arduino, this chip, and two motors. Write (pseudo) code that shows how you would move the motors both forward, both back, then one forward one back, and one back then forward.</h3>
-      <img width="80%" height="auto" src="./A5-Folder/a5p3.png"/>
-      <p>This is the schematic for question 3. Pins 4, 5, 12, and 13 of the L293D chip are connected to ground.</p>
-      <pre>
-        <code>
-          setup(){
-            pinMode(1,2,4, and 5, OUTPUT);
-          }
-          loop{
-            //both forward:
-            digitalWrite(2 and 4, HIGH);
-            digitalWrite(1 and 5, LOW);
-            delay(3000);
-            //both backward:
-            digitalWrite(2 and 4, LOW);
-            digitalWrite(1 and 5, HIGH);
-            delay(3000);
-            //alternate directions
-            digitalWrite(2, HIGH);
-            digitalWrite(1, LOW);
-            digitalWrite(4, LOW);
-            digitalWrite(5, HIGH);
-            delay(3000);
-            //alternate directions again
-            digitalWrite(2, LOW);
-            digitalWrite(1, HIGH);
-            digitalWrite(4, HIGH);
-            digitalWrite(5, LOW);
-            delay(3000);
-          }
-        </code>
-      </pre>
-      <p>This is the pseudocode for Q3.</p>
     </div>
   </body>
 </html>
