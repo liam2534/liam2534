@@ -20,28 +20,24 @@ function setup() {
 }
 
 function draw() {
-  const portIsOpen = checkPort(); // Check whether the port is open (see checkPort function below)
-  if (!portIsOpen) return; // If the port is not open, exit the draw loop
+  const portIsOpen = checkPort();
+  if (!portIsOpen) return;
 
-  let str = port.readUntil("\n"); // Read from the port until the newline
-  if (str.length == 0) return; // If we didn't read anything, return.
-  let str2 = port.readUntil("\n");
-  if (str.length == 0) return;
+  let str = port.readUntil("\n");
+  if (str.length == 0) return; 
+
+  let valArray = str.trim().split(",");
   
-  if(str <= 600){
+  if(valArray[0] <= 600){
     background("red");
-  } else if (str > 600 && str < 900){
-    background("black");
   } else{
-    background("blue");
+    background("black");
   }
 
-  if(str2 <= 600){
+  if(valArray[1] <= 600){
     txtColor = "white";
-  } else if (str > 600 && str < 900) {
-    txtColor = "gold";
   } else {
-    txtColor = "green";
+    txtColor = "gold";
   }
 
   if(mouseIsPressed){

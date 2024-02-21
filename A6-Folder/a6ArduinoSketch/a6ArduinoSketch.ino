@@ -15,8 +15,7 @@ void loop() {
     }
   }
 
-  Serial.println(analogRead(A0)); //X Value
+  Serial.print(analogRead(A0)); //X Value
+  Serial.print(",");
   Serial.println(analogRead(A1)); //Y Value
-
-  delay(500);
 }
