@@ -26,6 +26,9 @@
       <img width="80%" height="auto" src="./A6-Folder/a6schem.png"/>
       <p>This is my written out schematic. The joystick does not need resistors. As the calculation shows, I'm using a 220ohm resistor for the red LED, as justified by the calculation (desired current for red LED is 20mA).</p>
       <p>Note: Pins A0 and A1, which are both executing analogRead(), will output values between 0-1023, pending the position of the joystick.</p>
+      <p>Note 2: Regarding analogRead(), this function will return a value between 0-1023 (10 bit number) that is proportional to the voltage that the anolog pins, in this case A0 and A1, are reading at the time.
+        The joystick has two 10k potentiometers, corresponding to the "x and y" position of the joystick, in it that change pending that position.
+      </p>
     </div>
     <br>
     <br>
