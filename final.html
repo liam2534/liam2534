@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+
+    <title>Liam's HCDE 439 Physical Computing Page!</title>
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <h1>Final Project: Dog Treat Dispenser!</h1>
+    <div class="header">
+      <video width="100%" height="auto" controls autoplay muted>
+        <source src="./A6-Folder/a6vid.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div>
+      <p>This is a video of my final project! For my project, I wanted to make a treat dispensor for my dog. Behind the scenes, when he touches the metal sensor, a servo motor inside the 3D printed shell dispenses a treat for him. 
+      </p>
+    </div>
+    <br>
+    <br>
+    <h2>The Concept:</h2>
+    <p>When I heard about the final project for this class, I immediately knew I wanted to make a treat dispenser for my dog. The only questions I had all pertained to how exactly I wanted to physically design this product
+      due to the limited amount of tools and electrical components I had available to me. Furthermore, this project had a quick turnaround time (about a week), so I had to try my best to come up with a simple design that I could 
+      implement within that timeframe. </p>
+      <br>
+      <br>
+    <h2>Sketching Process:</h2>
+    <br>
+    <h3>First Design:</h3>
+    <img width="80%" height="auto" src="./Final-Project-Folder/firstDes.jpg"/>
+    <p>Another challenge that I had to account for was deciding the kinds of treats that would work with a design I would make. I needed to decide whether I wanted to start with a treat in mind (in this case, a cylindrical shape) or if I wanted
+      to make a design, and find a treat that would fit with that design. This first attempt was the former. I had little beef sticks my dog likes to eat, and I set them up on an incline, and the servo motor would activate, let one roll down, 
+      and quickly return to its spot. I quickly realized that this would likely not work because not all of the beef sticks are straight, and it would be hard for them to roll how I would need them to. Also, the dispensing method 
+      seemed unreliable, so I decided to make another design.
+    </p>
+    <br>
+    <h3>The Second Design:</h3>
+    <img width="80%" height="auto" src="./Final-Project-Folder/secondDes.jpg"/>
+    <p>This design is what I decided to stick with. I decided that having the treats drop down from the side of the motor, as well as having the arm of the motor be slightly tucked inward toward 
+      the backside of the frame (this is more clear on the physical product), makes treats less likely to get stuck or caught behind the arm of the servo motor.
+    </p>
+    <br>
+    <h3>Final CAD Design:</h3>
+    <div class="grid">
+      <img width="80%" height="auto" src="./Final-Project-Folder/cross-section.PNG"/>
+      <img width="80%" height="auto" src="./Final-Project-Folder/CADfinal.PNG"/>
+    </div>
+    
+    <p>This is a cross section view and standard view of the CAD design I made. The servo motor is going to sit in the rectangular slot on the right, and will push treats that are sliding down the ramp of the left out the 
+      small slot at the front of the device.
+    </p>
+    <br>
+    <br>
+    <h2>Physical Prototypes</h2>
+    <br>
+    <h3>First Physical Prototype:</h3>
+    <div class="grid">
+      <img width="100%" height="auto" src="./Final-Project-Folder/firstItApart.jpg"/>
+      <img width="100%" height="auto" src="./Final-Project-Folder/firstItTogether.jpg"/>
+    </div>
+    <p>This was the first physical prototype I made. It had the general shape I wanted, but I noticed that some dimensions were wrong. For example, the biggest problem was 
+      that the Servo Motor did not fit in the slot. I also made the ramp for the treats a bit bigger, and made various other adjustments.
+    </p>
+    <br>
+    <h3>Second Physical Prototype:</h3>
+    <div>
+      <h2>The Schematic:</h2>
+      <img width="80%" height="auto" src="./Final-Project-Folder/finalSchem.jpg"/>
+      <p>This is my written out schematic. The Servo Motor does not need resistors, as it operates at 5V. I am using a 1M ohm resistor for the capacitive touch sensor to ensure that the 
+        servo motor only activates when the metal object has significant pressure applied to it.</p>
+    </div>
+    <br>
+    <br>
+    <div>
+      <h2>Firmware</h2>
+        <pre>
+          <code>
+            //loading in library for Servo Motor
+            #include <Servo.h>
+            //making servo object S
+            Servo S;
+            //int for servo rotation value
+            #include <CapacitiveSensor.h>
+          
+            //current value int to be used in loop section
+            int currentVal = 0;
+            //last value int to be compared to currentVal int later in loop section
+            int lastVal = 0;
+            
+            //Making a capacitive sensor object C
+            CapacitiveSensor   C = CapacitiveSensor(4,2);
+          
+            //setup code runs once upon startup
+            void setup() {
+              //starts the serial monitor
+              Serial.begin(9600);
+          
+              //adding servo motor to pin 11
+              S.attach(9);
+              //sets the servo motor's position to 0 degrees
+              S.write(0);
+            }
+            
+            //loop runs repeatedly
+            void loop() {
+              //reads in the current value from the capactitiveSensor() function, takes in 30, which is the number of times the sensor is measured, the elapsed time is
+              //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the higher the number returned, the more contact is being made with the sensor
+              currentVal = C.capacitiveSensor(30);
+          
+              //checks if currentVal is > 2000 and if lastVal is < 2000
+              //if it is the case, the servo motor moves to dispense the treat
+              if (currentVal > 2000 && lastVal < 2000){
+                //moves the servo to 60 degrees
+                S.write(60);
+                //delays 100ms to give enough time for servo to move
+                delay(100);
+                //resets servo position to 0
+                S.write(0);
+                //delays one second
+                delay(1000);
+              }
+              //sets lastVal = currentVal to ensure the if statement works properly
+              lastVal = currentVal;
+            }            
+        </code>
+      </pre>
+
+      <p>
+        This is my commented-out firmware that explains how the circuit works. Essentially, when the Capacitive touch sensor detects something touching it, it triggers the motor to dispense a treat. The 
+        if statement is there, along with the small 1 second delay, to ensure that only one treat gets dispensed each time the sensor gets touched. One trigger = one treat!
+      </p>
+    </div>
+    <br>
+    <br>
+    <div>
+      <h2>Final Circuit!</h2>
+      <img width="80%" height="auto" src="./A6-Folder/a6thumbnail.jpg"/>
+      <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does.</p>
+    </div>
+  </body>
+</html>
