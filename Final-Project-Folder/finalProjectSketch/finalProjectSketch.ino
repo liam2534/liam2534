@@ -42,6 +42,9 @@
       //delays one second
       delay(1000);
     }
+    
+    Serial.println(currentVal);
+    
     //sets lastVal = currentVal to ensure the if statement works properly
     lastVal = currentVal;
   }            
