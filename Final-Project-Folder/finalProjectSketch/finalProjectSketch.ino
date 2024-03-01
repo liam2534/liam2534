@@ -30,10 +30,10 @@
     //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the higher the number returned, the more contact is being made with the sensor
     currentVal = C.capacitiveSensor(30);
 
-    //checks if currentVal is > 1000 and if lastVal is < 1000
+    //checks if currentVal is > 300 and if lastVal is < 300
     //if it is the case, the servo motor moves to dispense the treat
-    if (currentVal > 1000 && lastVal < 1000){
-      //moves the servo to 60 degrees
+    if (currentVal > 300 && lastVal < 300){
+      //moves the servo to 60 degreess
       S.write(60);
       //delays 100ms to give enough time for servo to move
       delay(100);
@@ -43,7 +43,8 @@
       delay(1000);
     }
     
-    Serial.println(currentVal);
+    //debugging code that is commented out, uncomment to see currentVal printed out to serial monitor
+    // Serial.println(currentVal);
     
     //sets lastVal = currentVal to ensure the if statement works properly
     lastVal = currentVal;
