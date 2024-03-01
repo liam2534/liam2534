@@ -2,7 +2,7 @@
   #include <Servo.h>
   //making servo object S
   Servo S;
-  //int for servo rotation value
+  //loading in library for capacitive touch
   #include <CapacitiveSensor.h>
 
   //current value int to be used in loop section
@@ -30,9 +30,9 @@
     //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the higher the number returned, the more contact is being made with the sensor
     currentVal = C.capacitiveSensor(30);
 
-    //checks if currentVal is > 2000 and if lastVal is < 2000
+    //checks if currentVal is > 1000 and if lastVal is < 1000
     //if it is the case, the servo motor moves to dispense the treat
-    if (currentVal > 2000 && lastVal < 2000){
+    if (currentVal > 1000 && lastVal < 1000){
       //moves the servo to 60 degrees
       S.write(60);
       //delays 100ms to give enough time for servo to move
