@@ -11,9 +11,14 @@
   <body>
     <h1>Final Project: Dog Treat Dispenser!</h1>
     <div class="header">
-      <video width="100%" height="auto" controls autoplay muted>
-        <source src="./A6-Folder/a6vid.mp4" type="video/mp4">
-      </video>
+      <div class="grid">
+        <video width="100%" height="auto" controls autoplay>
+          <source src="./Final-Project-Folder/percyFinal.mp4" type="video/mp4">
+        </video>
+        <video width="100%" height="auto" controls autoplay muted>
+          <source src="./Final-Project-Folder/finalVid.mp4" type="video/mp4">
+        </video>
+      </div>
     </div>
     <div>
       <p>This is a video of my final project! For my project, I wanted to make a treat dispensor for my dog. Behind the scenes, when he touches the metal sensor, a servo motor inside the 3D printed shell dispenses a treat for him. 
@@ -78,6 +83,14 @@
       servo motor. When the touch sensor detects enough contact, that triggers the servo motor to move its small arm and push a treat out of the small window. The arm retracts, and the treats 
       on the ramp roll down, and the one in front is ready to be dispensed.
     </p>
+    <br>
+    <h3>Final Prototype:</h3>
+    <img width="80%" height="auto" src="./Final-Project-Folder/thirdprototype.jpg"/>
+    <p>This is the final prototype that I made. The only difference with this one is that it's fully assembled. I 3D printed a holder for the Arduino, and glued it to the back, and I also glued
+      the holder for the servo motor to the rest of the body. It functions the same as the "second prototype." 
+    </p>
+    <br>
+    
     <div>
       <h2>The Schematic:</h2>
       <img width="80%" height="auto" src="./Final-Project-Folder/finalSchem.jpg"/>
@@ -122,10 +135,10 @@
               //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the higher the number returned, the more contact is being made with the sensor
               currentVal = C.capacitiveSensor(30);
           
-              //checks if currentVal is > 500 and if lastVal is < 500
+              //checks if currentVal is > 300 and if lastVal is < 300
               //if it is the case, the servo motor moves to dispense the treat
-              if (currentVal > 500 && lastVal < 500){
-                //moves the servo to 60 degrees
+              if (currentVal > 300 && lastVal < 300){
+                //moves the servo to 60 degreess
                 S.write(60);
                 //delays 100ms to give enough time for servo to move
                 delay(100);
@@ -136,11 +149,11 @@
               }
               
               //debugging code that is commented out, uncomment to see currentVal printed out to serial monitor
-              //Serial.println(currentVal);
+              // Serial.println(currentVal);
               
               //sets lastVal = currentVal to ensure the if statement works properly
               lastVal = currentVal;
-            }                     
+            }                         
         </code>
       </pre>
 
@@ -153,8 +166,10 @@
     <br>
     <div>
       <h2>Final Circuit!</h2>
-      <img width="80%" height="auto" src="./A6-Folder/a6thumbnail.jpg"/>
-      <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does.</p>
+      <img width="80%" height="auto" src="./Final-Project-Folder/finalThumbnail.jpg"/>
+      <p>This is a still image of my final circuit! The video at the top of the page does a better job showing what it actually does. The servo motor is inside the 
+        3D printed frame.
+      </p>
     </div>
   </body>
 </html>
