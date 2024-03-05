@@ -132,8 +132,10 @@
             
             //loop runs repeatedly
             void loop() {
-              //reads in the current value from the capactitiveSensor() function, takes in 30, which is the number of times the sensor is measured, the elapsed time is
-              //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the higher the number returned, the more contact is being made with the sensor
+              //reads in the current value from the capactitiveSensor() function, takes in 30, which is the 
+              //number of times the sensor is measured, the elapsed time is
+              //returned in "arbitrary units" (according to the documentation) for this library. Generally speaking, the 
+              //higher the number returned, the more contact is being made with the sensor
               currentVal = C.capacitiveSensor(30);
           
               //checks if currentVal is > 300 and if lastVal is < 300
